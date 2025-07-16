@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Training Report Generator</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      background: linear-gradient(to right, #667eea, #764ba2);
+      font-family: 'Segoe UI', sans-serif;
+      padding: 30px;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      color: #4f46e5;
+    }
+    textarea, input {
+      margin-bottom: 15px;
+    }
+    .btn-primary {
+      background: #4f46e5;
+      border: none;
+    }
+    .report-box {
+      white-space: pre-wrap;
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #ddd;
+    }
+    .donation-section {
+      margin-top: 40px;
+      background: #f0f4ff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .donation-section h4 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .donation-btn {
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mb-4">📋 Training Report Generator</h1>
+
+    <div class="mb-4">
+      <label>Training Title</label>
+      <input type="text" id="title" class="form-control" placeholder="e.g. Sales Mastery 101" />
+      <label>Date</label>
+      <input type="date" id="date" class="form-control" />
+      <label>Duration (Hours)</label>
+      <input type="number" id="duration" class="form-control" />
+      <label>Trainer Name</label>
+      <input type="text" id="trainer" class="form-control" />
+      <label>Objectives</label>
+      <textarea id="objectives" class="form-control" placeholder="List objectives..."></textarea>
+      <label>Summary</label>
+      <textarea id="summary" class="form-control" placeholder="Training summary..."></textarea>
+    </div>
+
+    <div class="mb-4">
+      <h2>💰 ROI Estimator</h2>
+      <input type="number" id="cost" class="form-control" placeholder="Total Training Cost ($)" />
+      <input type="number" id="gain" class="form-control" placeholder="Estimated Productivity Gain ($)" />
+    </div>
+
+    <div class="mb-4">
+      <button class="btn btn-primary me-2" onclick="generateReport()">Generate Report</button>
+      <button class="btn btn-secondary" onclick="downloadPDF()">Download PDF</button>
+    </div>
+
+    <hr />
+    <h2 class="mt-4">📄 Report Preview</h2>
+    <div class="report-box" id="output">Your report will appear here after generation.</div>
+
+    <div class="donation-section">
+      <h4>💡 Love this tool? Help us keep it free!</h4>
+      <button class="btn btn-outline-danger donation-btn" type="button" data-bs-toggle="collapse" data-bs-target="#bkash">📱 bKash</button>
+      <button class="btn btn-outline-primary donation-btn" type="button" data-bs-toggle="collapse" data-bs-target="#bank">🏦 Bank Transfer</button>
+
+      
+                <p><strong>bKash Number:</strong> +8801675390850</p>
+        <p><strong>Account Type:</strong> Personal</p>
+        <p><strong>Account Name:</strong> Nahian Bin Asadullah</p>
+        <p><em>Send Money > Enter number > Add reference "Training Report Generator"</em></p>
+      </div>
+
+      <div class="collapse mt-3" id="bank">
+        <p><strong>Western Union</strong><br>
+        Name: Nahian Bin Asadullah<br>
+        Country: Bangladesh<br>
+        City: Dhaka<br>
+        Address: Suvastu Shapnil, House 5/A (new), Road 15 (new), 28 (old), Flat GRB, Dhanmondi R/A, Dhaka -1209<br>
+        <em>Pick up at any Western Union agent</em></p>
+
+        <p><strong>MoneyGram</strong><br>
+        Name: Nahian Bin Asadullah<br>
+        Country: Bangladesh<br>
+        Mobile: +8801675390850<br>
+        <em>Pick up at banks/agents</em></p>
+
+        <p><strong>Remitly</strong><br>
+        Mobile Wallet: +8801675390850<br>
+        <em>Delivers to bKash/Nagad directly</em></p>
+
+        <p><strong>WorldRemit</strong><br>
+        Mobile: +8801675390850<br>
+        <em>Cash pickup or mobile wallet</em></p>
+
+        <p><strong>Ria Money Transfer</strong><br>
+        Name: Nahian Bin Asadullah<br>
+        <em>Available at BRAC Bank, City Bank branches</em></p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Nahian AI Tools — Built for HR & L&D Professionals</p>
+  </footer>
+
+  <script>
+    function generateReport() {
+      const title = document.getElementById('title').value || 'Untitled';
+      const date = document.getElementById('date').value || 'N/A';
+      const duration = document.getElementById('duration').value || 'N/A';
+      const trainer = document.getElementById('trainer').value || 'N/A';
+      const objectives = document.getElementById('objectives').value || 'N/A';
+      const summary = document.getElementById('summary').value || 'N/A';
+      const cost = parseFloat(document.getElementById('cost').value) || 0;
+      const gain = parseFloat(document.getElementById('gain').value) || 0;
+      const roi = cost > 0 ? (((gain - cost) / cost) * 100).toFixed(2) + '%' : 'N/A';
+
+      const text = `Training Report\n\nTitle: ${title}\nDate: ${date}\nDuration: ${duration} hours\nTrainer: ${trainer}\n\nObjectives:\n${objectives}\n\nSummary:\n${summary}\n\nROI Analysis:\nTotal Cost: $${cost}\nEstimated Gain: $${gain}\nROI: ${roi}`;
+
+      document.getElementById('output').innerText = text;
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const content = document.getElementById('output').innerText;
+      const lines = doc.splitTextToSize(content, 180);
+      doc.text(lines, 10, 10);
+      doc.save('training_report.pdf');
+    }
+  </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
